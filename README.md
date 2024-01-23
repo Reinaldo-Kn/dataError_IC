@@ -43,25 +43,11 @@ IQR = Q3 - Q1
 ### Spike/Peak
 The Peak Error function is utilized to detect spikes or outliers in a dataset based on the deviation from the mean. The calculation involves identifying values that exceed a certain threshold, which is determined by the multiplication of the standard deviation.
 
-The Peak Error is calculated using the following mathematical expression:
-
-\[ \text{{mean\_temp}} = \text {temperatura\_column.mean()}} \]
-\[ \text{{std\_temp}} = \text{{temperatura\_column.std()}} \]
-\[ \text{{spike\_threshold}} = 1.75 \]
-
-The Peak Error values (\text{{spike\_errors}}) are identified as follows:
-
-\[ \text{{spike\_errors}} = \text{{temperatura\_column}} \left[ \left| \text{{temperatura\_column}} - \text{{mean\_temp}} \right| > \text{{spike\_threshold}} \times \text{{std\_temp}} \right] \]
-
 Where:
-- \(\text{{mean\_temp}}\) is the mean of the temperature column,
-- \(\text{{std\_temp}}\) is the standard deviation of the temperature column,
-- \(\text{{spike\_threshold}}\) is the threshold multiplier to identify spikes, and
-- \(\text{{spike\_errors}}\) is a subset of the temperature column containing values that deviate significantly from the mean.
-
-Adjust the \(\text{{spike\_threshold}}\) according to your specific requirements to control the sensitivity of the peak error detection.
-
-This mathematical explanation provides a detailed insight into how the Peak Error function is calculated and applied in identifying spikes or deviations in the temperature data.
+- `mean_temp` is the mean of the temperature column
+- `std_temp` is the standard deviation of the temperature column
+- `spike_threshold` is the threshold multiplier to identify spikes
+- `spike_errors` is a subset of the temperature column containing values that deviate significantly from the mean.
 
 
 ![peak](images/peak.png)
@@ -88,4 +74,4 @@ For each time point in the dataset, the absolute difference (`diff`) between the
 
 The function indicates that there are no values with a temperature difference of more than 5 degrees in the dataset.
 
-![variance](images/variance.png
+![variance](images/variance.png)
