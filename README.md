@@ -38,7 +38,7 @@ Q3 = temperature_column.quantile(0.75)
 IQR = Q3 - Q1
 ```
 
-![out](images/outlier.png)
+![out](images/outliers.png)
 
 ### Spike/Peak
 The Peak Error function is utilized to detect spikes or outliers in a dataset based on the deviation from the mean. The calculation involves identifying values that exceed a certain threshold, which is determined by the multiplication of the standard deviation.
