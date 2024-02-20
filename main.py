@@ -4,13 +4,13 @@ import pandas as pd
 import numpy as np
 
 
-def temp_geral(data_escolhida):
+def temp_geral(data_escolhida,coluna_escolhida):
     df = pd.read_csv('DUSTAINEW.csv', sep=';', decimal=',')
     df['Datetime'] = pd.to_datetime(df['Datetime'])  
 
     df = df[df['Datetime'].dt.date == data_escolhida]
     
-    temperatura_column = df['Temperatura']
+    temperatura_column = df[coluna_escolhida]
     horas = df['Datetime']
     horas = horas.dt.strftime('%H:%M')
     
@@ -20,21 +20,20 @@ def temp_geral(data_escolhida):
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=45))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-    ax.set(xlabel='Horas', ylabel='Temperatura', title='Temperatura Geral', xlim=[min_datetime, max_datetime])
+    ax.set(xlabel='Horas', ylabel=coluna_escolhida, title=f'{coluna_escolhida} Geral', xlim=[min_datetime, max_datetime])
     ax.plot(df['Datetime'], temperatura_column, label='Temperatura', linewidth=2, color='blue')
     ax.grid(True)
     fig.autofmt_xdate()
-
     plt.show()
 
 
-def temp_outliers(data_escolhida):
+def temp_outliers(data_escolhida, coluna_escolhida):
     df = pd.read_csv('DUSTAINEW.csv', sep=';', decimal=',')
     df['Datetime'] = pd.to_datetime(df['Datetime'])  
 
     df = df[df['Datetime'].dt.date == data_escolhida]
     
-    temperatura_column = df['Temperatura']
+    temperatura_column = df[coluna_escolhida]  
     horas = df['Datetime']
     horas = horas.dt.strftime('%H:%M')
     
@@ -49,14 +48,14 @@ def temp_outliers(data_escolhida):
     lower_limit = Q1 - threshold * IQR
     upper_limit = Q3 + threshold * IQR
 
-    outliers = df[(df['Temperatura'] < lower_limit) | (df['Temperatura'] > upper_limit)]
+    outliers = df[(temperatura_column < lower_limit) | (temperatura_column > upper_limit)]  # Use a coluna escolhida
         
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=45))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-    ax.set(xlabel='Horas', ylabel='Temperatura', title='Temperatura com Outliers', xlim=[min_datetime, max_datetime])
-    ax.plot(df['Datetime'], temperatura_column, label='Temperatura', linewidth=2, color='blue')
-    ax.scatter(list(outliers['Datetime']), list(outliers['Temperatura']), color='red', label='Outliers', zorder=5)
+    ax.set(xlabel='Horas', ylabel=coluna_escolhida, title=f'{coluna_escolhida} com Outliers', xlim=[min_datetime, max_datetime])
+    ax.plot(df['Datetime'], temperatura_column, label=coluna_escolhida, linewidth=2, color='blue')
+    ax.scatter(list(outliers['Datetime']), list(outliers[coluna_escolhida]), color='red', label='Outliers', zorder=5)
     ax.grid(True)
     fig.autofmt_xdate()
     plt.legend()
@@ -65,15 +64,16 @@ def temp_outliers(data_escolhida):
     print(IQR)
     print(Q1)
     print(Q3)
-    print(df['Temperatura'].describe())
+    print(temperatura_column.describe())
 
-def temp_peak(data_escolhida):
+
+def temp_peak(data_escolhida, coluna_escolhida):
     df = pd.read_csv('DUSTAINEW.csv', sep=';', decimal=',')
     df['Datetime'] = pd.to_datetime(df['Datetime'])  
 
     df = df[df['Datetime'].dt.date == data_escolhida]
     
-    temperatura_column = df['Temperatura']
+    temperatura_column = df[coluna_escolhida]  
     horas = df['Datetime']
     horas = horas.dt.strftime('%H:%M')
     
@@ -85,14 +85,14 @@ def temp_peak(data_escolhida):
     spike_threshold = 2
     
     # Identificar os picos de erro
-    spike_errors = df[df['Temperatura'] > (mean_temp + spike_threshold * std_temp)]
+    spike_errors = df[temperatura_column > (mean_temp + spike_threshold * std_temp)]  # Use a coluna escolhida
     
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=50))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-    ax.set(xlabel='Horas', ylabel='Temperatura', title='Temperatura com Picos de Erros', xlim=[min_datetime, max_datetime])
-    ax.plot(df['Datetime'], temperatura_column, label='Temperatura', linewidth=2, color='blue')
-    ax.scatter(spike_errors['Datetime'], spike_errors['Temperatura'], color='red', label='Picos de Erros')
+    ax.set(xlabel='Horas', ylabel=coluna_escolhida, title=f'{coluna_escolhida} com Picos de Erros', xlim=[min_datetime, max_datetime])
+    ax.plot(df['Datetime'], temperatura_column, label=coluna_escolhida, linewidth=2, color='blue')
+    ax.scatter(spike_errors['Datetime'], spike_errors[coluna_escolhida], color='red', label='Picos de Erros')
     ax.axhline(y=mean_temp, color='green', linestyle='--', label=f'Média: {mean_temp:.2f}')
     ax.axhline(y=mean_temp + spike_threshold * std_temp, color='orange', linestyle='--', label=f' Desvios padrão: {spike_threshold}')
     ax.axhline(y=mean_temp - spike_threshold * std_temp, color='orange', linestyle='--')
@@ -100,25 +100,25 @@ def temp_peak(data_escolhida):
     fig.autofmt_xdate()
     plt.legend()
     plt.show()
+
    
 
-def temp_stuck(data_escolhida):
+def temp_stuck(data_escolhida, coluna_escolhida):
     df = pd.read_csv('DUSTAINEW.csv', sep=';', decimal=',')
     df['Datetime'] = pd.to_datetime(df['Datetime'])  
 
     df = df[df['Datetime'].dt.date == data_escolhida]
     
-    temperatura_column = df['Temperatura']
+    temperatura_column = df[coluna_escolhida]  
     horas = df['Datetime']
     horas = horas.dt.strftime('%H:%M')
 
-    
     resultados = []     
     tamanho_sequencia = 25
     threshold_variancia = 0.25
 
     for i in range(len(df) - tamanho_sequencia + 1):
-        sequencia = df['Temperatura'].iloc[i:i+tamanho_sequencia]
+        sequencia = df[coluna_escolhida].iloc[i:i+tamanho_sequencia]  
         media_sequencia = round(sequencia.mean(), 2)
         variancia_sequencia = round(sequencia.var(), 2)
 
@@ -130,72 +130,97 @@ def temp_stuck(data_escolhida):
     df_resultados = pd.DataFrame(resultados, columns=['ID', 'Temperatura'])
     plt.bar(df_resultados['ID'], df_resultados['Temperatura'])
     plt.xlabel('ID')
-    plt.ylabel('Temperatura Stuck')
-    plt.title('Historiograma das Temperaturas Stuck')
+    plt.ylabel(coluna_escolhida)  
+    plt.title(f'Historiograma das {coluna_escolhida} Stuck')  
     plt.show()
     return resultados
 
-def temp_variance(data_escolhida):
+
+def temp_variance(data_escolhida, coluna_escolhida):
     df = pd.read_csv('DUSTAINEW.csv', sep=';', decimal=',')
     df['Datetime'] = pd.to_datetime(df['Datetime'])  
 
     df = df[df['Datetime'].dt.date == data_escolhida]
     
-    temperatura_column = df['Temperatura']
+    temperatura_column = df[coluna_escolhida]  
     horas = df['Datetime']
     horas = horas.dt.strftime('%H:%M')
-    
-    min_datetime = min(df['Datetime'])
-    max_datetime = max(df['Datetime'])
     
     id_correspondente = df['Num']
     threshold = 5
     vetor_ids = []
 
     for i in range(len(df) - 1):
-        temperatura_atual = df.iloc[i]['Temperatura']
-        temperatura_proxima = df.iloc[i + 1]['Temperatura']
+        temperatura_atual = df.iloc[i][coluna_escolhida]  
+        temperatura_proxima = df.iloc[i + 1][coluna_escolhida]  
 
         diff = abs(temperatura_proxima - temperatura_atual)
 
         if diff > threshold:
             vetor_ids.append(id_correspondente.iloc[i])
-        
+            print(f'ID: {id_correspondente.iloc[i]} - Variação: {diff:.2f} ')
     
-    if vetor_ids == []:
-            print('Não há valores com variação maior que 5 graus')
+    if not vetor_ids:
+        print(f'Não há valores com variação maior que {threshold} graus na coluna {coluna_escolhida}')
     return vetor_ids
-     
-
 
 if __name__ == '__main__':
     while True:
+        print('Escolha a coluna a ser analisada:')
+        print('(1) Temperatura')
+        print('(2) Umidade')
+        print('(3) MP2,5_1')
+        print('(4) MP10_1')
+        print('(5) MP2,5_2')
+        print('(6) MP10_2')
+        print('(7) Sair')
+        opcao_coluna = int(input('Digite a opção desejada: '))
+        if opcao_coluna == 1:
+            coluna_escolhida = 'Temperatura'
+        elif opcao_coluna == 2:
+            coluna_escolhida = 'Umidade'
+        elif opcao_coluna == 3:
+            coluna_escolhida = 'MP2,5_1'
+        elif opcao_coluna == 4:
+            coluna_escolhida = 'MP10_1'
+        elif opcao_coluna == 5:
+            coluna_escolhida = 'MP2,5_2'
+        elif opcao_coluna == 6:
+            coluna_escolhida = 'MP10_2'
+        elif opcao_coluna == 7:
+            break
+        else:
+            print('Opção inválida!')
+            continue
+        
+        
+        
         print('Escolha uma das opções abaixo:')
-        print('1. Temperatura Geral')
-        print('2. Temperatura com Outliers')
-        print('3. Temperatura com Picos de Erros')
-        print('4. Temperatura com Valores Stuck')
-        print('5. Temperatura com Variância')
-        print('6. Sair')
+        print('(1) Geral')
+        print('(2) Outliers')
+        print('(3) Picos de Erros')
+        print('(4) Valores Stuck')
+        print('(5) Variância')
+        print('(6) Sair')
         opcao = int(input('Digite a opção desejada: '))
         if opcao == 1:
             data_escolhida = input('Digite a data no formato dd/mm/aaaa: ')
-            temp_geral(pd.to_datetime(data_escolhida, dayfirst=True).date())
+            temp_geral(pd.to_datetime(data_escolhida, dayfirst=True).date(),coluna_escolhida)
         elif opcao == 2:
             data_escolhida = input('Digite a data no formato dd/mm/aaaa: ')
-            temp_outliers(pd.to_datetime(data_escolhida, dayfirst=True).date())
+            temp_outliers(pd.to_datetime(data_escolhida, dayfirst=True).date(),coluna_escolhida)
         elif opcao == 3:
             data_escolhida = input('Digite a data no formato dd/mm/aaaa: ')
-            temp_peak(pd.to_datetime(data_escolhida, dayfirst=True).date())
+            temp_peak(pd.to_datetime(data_escolhida, dayfirst=True).date(),coluna_escolhida)
         elif opcao == 4:
             data_escolhida = input('Digite a data no formato dd/mm/aaaa: ')
-            resultados = temp_stuck(pd.to_datetime(data_escolhida, dayfirst=True).date())
+            resultados = temp_stuck(pd.to_datetime(data_escolhida, dayfirst=True).date(),coluna_escolhida)
             print(resultados)
                 
         elif opcao == 5:
             data_escolhida = input('Digite a data no formato dd/mm/aaaa: ')
-            resultados = temp_variance(pd.to_datetime(data_escolhida, dayfirst=True).date())
-            print(resultados)
+            resultados = temp_variance(pd.to_datetime(data_escolhida, dayfirst=True).date(),coluna_escolhida)
+            # print(resultados)
             
         elif opcao == 6:
             break
