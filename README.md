@@ -1,22 +1,28 @@
 
 # Data error identifier
 
-Scientific initiation project to identify errors in temperature, humidity and particulate matter sensors
+Scientific initiation project to identify errors in temperature, humidity and particulate matter sensors. 
 
 
 ## Documentation
 
 [Based on Roberto M. Scheffel's research](https://journal-bcs.springeropen.com/articles/10.1186/s13173-019-0094-6)
 
+[Outliers in a Smart Cities context](https://sciendo.com/article/10.2478/ijssis-2024-0004)
+
+[ Three Sigma ](https://fastercapital.com/content/Outlier-detection--Detecting-Anomalies-with-Three-Sigma-Limits.html)
+
+[GESD library](https://scikit-posthocs.readthedocs.io/en/latest/generated/scikit_posthocs.outliers_gesd.html)
 
 ## Features
 
 - Overall graph
 - Outlier error identifier using the IQR algorithm
+- Outlier error identifier using the 3 sigma algorithm
 - Spike/Peak error identifier 
 - Stuck value identifier 
 - High noise/Variance value identifier
-
+- Generalized Extreme Studentized Deviate (GESD) identifier
 
 ## Results
 
@@ -39,6 +45,15 @@ IQR = Q3 - Q1
 ```
 
 ![out](images/outliers.png)
+
+### 3 Sigma Outlier
+Three Sigma Limits are calculated using the mean value and the standard deviation of the data. The mean value is the average of all the data points, and the standard deviation measures how much the data points deviate from the mean.
+
+```python
+Upper_limit = (mean + 3 standard deviation)
+Lower_limit = (mean - 3 standard deviation)
+```
+![out3](images/outliers3sigma.png)
 
 ### Spike/Peak
 The Peak Error function is utilized to detect spikes or outliers in a dataset based on the deviation from the mean. The calculation involves identifying values that exceed a certain threshold, which is determined by the multiplication of the standard deviation.
